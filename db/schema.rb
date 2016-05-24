@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160513170853) do
+ActiveRecord::Schema.define(version: 20160524215250) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,9 @@ ActiveRecord::Schema.define(version: 20160513170853) do
     t.string   "animal"
     t.string   "new_category"
     t.boolean  "retired",      default: false
+    t.integer  "weight"
+    t.integer  "height"
+    t.integer  "width"
   end
 
   create_table "reviews", force: :cascade do |t|
