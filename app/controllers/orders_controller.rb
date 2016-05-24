@@ -42,10 +42,23 @@ class OrdersController < ApplicationController
   end
 
   def checkout
+    # original code
     @order = current_order
     if @order.orderitems.count == 0
       redirect_to edit_order_path(current_order.id), alert: "Please add items to your cart!"
     end
+
+    # connection with shipping-service API
+    @user = @order.user
+    order_items = @order.orderitems.map { |item| { height: item.product.height, width: item.product.width, weight: item.product.weight } }
+
+    request = { origin: { street_address: @user.street_address, city: @user.city, state: @user.state, zip: @user.zip }, destination: { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip }, products: order_items }.to_json
+
+    response = HTTParty.get("https://agile-shore-50946.herokuapp.com/quote", body: request)
+
+    binding.pry
+
+    # # render the shipping costs from the response
   end
 
   def confirmation
@@ -55,6 +68,19 @@ class OrdersController < ApplicationController
     order = Order.create
     order.update(status: "Pending")
     session[:order_id] = order.id
+
+
+    # connection with shipping-service API
+    # @user = @order.user
+    # order_items = @order.orderitems.map { |item| { height: item.product.height, width: item.product.width, weight: item.product.weight } }
+    #
+    # request = { origin: { street_address: @user.street_address, city: @user.city, state: @user.state, zip: @user.zip }, destination: { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip }, products: order_items }.to_json
+    #
+    # response = HTTParty.get("https://agile-shore-50946.herokuapp.com/quote", body: request)
+
+    # binding.pry
+
+    # render the shipping costs from the response
   end
 
 
