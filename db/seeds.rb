@@ -1,8 +1,8 @@
-User.create(full_name: "Jess")
-User.create(full_name: "Alysia")
-User.create(full_name: "Deirdre")
-User.create(full_name: "Llama")
-User.create(full_name: "Puppy Party")
+User.create(username: "jessrules", email: "jess@jess", full_name: "Jess", street_address: "123 1st Ave", city: "Seattle", state: "WA", zip: "98115")
+User.create(username: "alysiascool", email: "alysia@alysia", full_name: "Alysia", street_address: "123 2nd Ave", city: "Seattle", state: "WA", zip: "98112")
+User.create(username: "deidretime", email: "deirdre@deidre", full_name: "Deirdre", street_address: "1342 Wood St.", city: "Lynnwood", state: "WA", zip: "98087")
+User.create(username: "llama", email: "llama@llama", full_name: "Llama", street_address: "123 2nd Ave", city: "Seattle", state: "WA", zip: "98112")
+User.create(username: "puppytime", email: "puppy@puppy", full_name: "Puppy Party", street_address: "123 2nd Ave", city: "Seattle", state: "WA", zip: "98112")
 
 Product.create(name: 'Hot Dog', quantity: 5, description: "Hot diggity dog. Mustard too!", price: 15,
 photo_url: "http://ecx.images-amazon.com/images/I/41qN0y-0FFL._SY300_.jpg", user_id: 2, animal: 'Dog', category: "Food", weight: 22, height: 5, width: 3)
