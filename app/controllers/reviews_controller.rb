@@ -11,12 +11,12 @@ class ReviewsController < ApplicationController
 
   def create
     @review = Review.new(review_create_params[:review])
-		if @review.save
+    if @review.save
       update_product_rating(Product.find(@review.product_id))
-    	redirect_to product_path(@review.product_id)
-  	else
-  		render :new
-  	end
+      redirect_to product_path(@review.product_id)
+    else
+      render :new
+    end
   end
 
 
@@ -29,7 +29,7 @@ class ReviewsController < ApplicationController
   end
 
   def review_create_params
-		params.permit(review: [:rating, :description, :product_id, :user_id])
-	end
+    params.permit(review: [:rating, :description, :product_id, :user_id])
+  end
 
 end
