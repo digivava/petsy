@@ -42,6 +42,7 @@ class OrdersController < ApplicationController
   end
 
   def checkout
+    @user = User.find(current_user.id)
     # original code
     @order = current_order
     if @order.orderitems.count == 0
@@ -49,10 +50,12 @@ class OrdersController < ApplicationController
     end
 
     # connection with shipping-service API
-    @user = @order.user
+    @merchant = @order.user
     order_items = @order.orderitems.map { |item| { height: item.product.height, width: item.product.width, weight: item.product.weight } }
 
-    request = { origin: { street_address: @user.street_address, city: @user.city, state: @user.state, zip: @user.zip }, destination: { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip }, products: order_items }.to_json
+    request = { origin: { street_address: @merchant.street_address, city: @merchant.city, state: @merchant.state, zip: @merchant.zip },
+    destination: { street_address: @order.street_address, city: @order.city,
+    state: @order.state, zip: @order.billing_zip }, products: order_items }.to_json
 
     response = HTTParty.get("https://agile-shore-50946.herokuapp.com/quote", body: request)
 
@@ -71,7 +74,7 @@ class OrdersController < ApplicationController
 
 
     # connection with shipping-service API
-    # @user = @order.user
+    # @merchant = @order.user
     # order_items = @order.orderitems.map { |item| { height: item.product.height, width: item.product.width, weight: item.product.weight } }
     #
     # request = { origin: { street_address: @user.street_address, city: @user.city, state: @user.state, zip: @user.zip }, destination: { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip }, products: order_items }.to_json
