@@ -85,7 +85,6 @@ class OrdersController < ApplicationController
 
       response = HTTParty.post("http://localhost:3001/quote", body: request.to_json)
 
-      raise
     end
 
     # connection with shipping-service API
