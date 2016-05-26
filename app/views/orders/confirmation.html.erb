@@ -8,15 +8,13 @@ Shipping To:
 <%= @order.city %><br>
 <%= @order.state %>, <%= @order.billing_zip %><br>
 Credit Card : **** **** **** **** <%= @order.credit_card_number %><br><br>
-<% @cart_price = 0 %>
 <% @order.orderitems.each do |item| %>
 Item: <%= link_to Product.find(item.product_id).name , product_path(Product.find(item.product_id).id) %><br>
 Quantity: <%= item.quantity %><br>
 Subtotal: $<%= number_with_precision item.total_price , precision: 2%><br><br>
-<% @cart_price += item.total_price %>
 <% end %>
 
-<h3> Total Price of Order: $<%= number_with_precision @cart_price , precision: 2   %></h3>
+<h3> Total Price of Order: $<%= number_with_precision @order.price , precision: 2   %></h3>
 <h3> Order Status: <%= @order.status %></h3>
 <h3> Time Order was placed: <%= @order.updated_at %></h3>
 

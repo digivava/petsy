@@ -69,10 +69,8 @@
 
 
   <%= f.hidden_field :status, value: "Completed" %>
-
+  
+  <%= @order.price %>
   <br>
   <%= f.submit "Complete Purchase", class:"btn btn-success btn-lg" %>
   <% end %>
-
-
-  <%=params%>
