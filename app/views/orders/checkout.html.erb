@@ -69,8 +69,12 @@
 
 
   <%= f.hidden_field :status, value: "Completed" %>
-  
-  <%= @order.price %>
+
+  Subtotal: <%= @order.subtotal %><br>
+  <% if @shipping_price %>
+    Shipping: <%= @shipping_price %><br>
+  <% end %>
+  Total: <%= @order.price %>
   <br>
   <%= f.submit "Complete Purchase", class:"btn btn-success btn-lg" %>
   <% end %>

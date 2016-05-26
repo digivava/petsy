@@ -115,8 +115,8 @@ class OrdersController < ApplicationController
 
   def shipping_price
     order = Order.find(params[:id])
-    subtotal = order.orderitems.map { |item| item.total_price }.sum
-    order.price = subtotal + params[:service].to_i
+    @shipping_price = (params[:service].to_f / 100 )
+    order.price = order.subtotal + @shipping_price
     order.save!
     checkout
     render :checkout
