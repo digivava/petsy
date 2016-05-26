@@ -121,6 +121,15 @@ class OrdersController < ApplicationController
     # render the shipping costs from the response
   end
 
+  def shipping_price
+    order = Order.find(params[:id])
+    subtotal = order.orderitems.map { |item| item.total_price }.sum
+    order.price = subtotal + params[:service].to_i
+    order.save!
+    checkout
+    render :checkout
+  end
+
 
   private
 

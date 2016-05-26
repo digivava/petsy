@@ -1,13 +1,18 @@
-<h1>Complete your purchase:</h1>
-<%@response.each do |service|%>
-<%=service["service_name"]%>
-<%=service["price"]%><br>
-<%end%>
-
 
 
 <h4>To finish up, please provide all of the following information:</h4><br>
+<%=form_tag update_with_shipping_price_path, :method => 'post' do%>
+    <% @response.each do |service|%>
+    <%=service["service_name"]%>
+    <%=radio_button_tag(:service, service["price"]) %>
+  <%end%>
+   <%=submit_tag 'update shipping'%>
+<%end%>
+
+
 <%= form_for @order, html: { :class => "form-horizontal center" } do |f| %>
+
+<h1>Complete your purchase:</h1>
 
   <div class="form-group">
   <%= f.label :email, class: "col-xs-4 control-label required" %>
@@ -68,3 +73,6 @@
   <br>
   <%= f.submit "Complete Purchase", class:"btn btn-success btn-lg" %>
   <% end %>
+
+
+  <%=params%>

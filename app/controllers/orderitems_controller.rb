@@ -11,6 +11,7 @@ class OrderitemsController < ApplicationController
     redirect_to edit_order_path(current_order.id)
   end
 
+
   def update
     @orderitem = Orderitem.find(params[:id])
     if @orderitem.update(orderitem_edit_params[:orderitem])
@@ -26,7 +27,7 @@ class OrderitemsController < ApplicationController
     @orderitem.shipped = true
     @orderitem.save
     redirect_to order_deets_path(id: current_user.id, order_id: @orderitem.order_id)
-    
+
   end
 
   def destroy

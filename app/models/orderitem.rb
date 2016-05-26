@@ -8,4 +8,5 @@ class Orderitem < ActiveRecord::Base
     self.product.price * self.quantity
   end
 
+
 end
