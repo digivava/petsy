@@ -48,6 +48,27 @@ class OrdersController < ApplicationController
     if @order.orderitems.count == 0
       redirect_to edit_order_path(current_order.id), alert: "Please add items to your cart!"
     end
+
+    @order.orderitems.each do |item|
+      request = {
+        origin:
+          # default address of Ada (treating it like a central warehouse)
+          { street_address: "1215 4th Ave", city: "Seattle", state: "WA", zip: "98161" },
+        destination:
+          { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip },
+        product:
+          { height: item.product.height, width: item.product.width, weight: item.product.weight }
+        }
+
+      @response = HTTParty.post("http://localhost:3001/quote", body: request.to_json)
+
+    end
+
+
+
+
+
+
   end
 
   def confirmation

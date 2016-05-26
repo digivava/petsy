@@ -1,4 +1,10 @@
 <h1>Complete your purchase:</h1>
+<%@response.each do |service|%>
+<%=service["service_name"]%>
+<%=service["price"]%><br>
+<%end%>
+
+
 
 <h4>To finish up, please provide all of the following information:</h4><br>
 <%= form_for @order, html: { :class => "form-horizontal center" } do |f| %>
