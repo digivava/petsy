@@ -64,7 +64,7 @@ class OrdersController < ApplicationController
 
     products = @order.orderitems.map do |item|
       {
-        height: item.product.height, width: item.product.width, weight: item.product.weight }
+        height: item.product.height, width: item.product.width, weight: item.product.weight
       }
     end
     request = {
@@ -75,7 +75,7 @@ class OrdersController < ApplicationController
         { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip },
       products: products
     }
-    @response = HTTParty.post("http://localhost:3001/quote", body: request.to_json)
+    @response = HTTParty.post("http://localhost:3001/quote", body: { request: request.to_json })
   end
 
   def confirmation
