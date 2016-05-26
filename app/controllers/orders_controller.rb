@@ -83,7 +83,7 @@ class OrdersController < ApplicationController
           { height: item.product.height, width: item.product.width, weight: item.product.weight }
         }
 
-      response = HTTParty.get("https://agile-shore-50946.herokuapp.com/quote", body: request)
+      response = HTTParty.post("http://localhost:3001/quote", body: request.to_json)
 
       raise
     end
