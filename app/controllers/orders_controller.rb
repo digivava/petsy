@@ -83,9 +83,8 @@ class OrdersController < ApplicationController
           { height: item.product.height, width: item.product.width, weight: item.product.weight }
         }
 
-      response = HTTParty.post("http://localhost:3001/quote", body: request.to_json)
+      @response = HTTParty.post("http://localhost:3001/quote", body: request.to_json)
 
-      raise
     end
 
     # connection with shipping-service API
