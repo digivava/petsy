@@ -49,26 +49,33 @@ class OrdersController < ApplicationController
       redirect_to edit_order_path(current_order.id), alert: "Please add items to your cart!"
     end
 
-    @order.orderitems.each do |item|
-      request = {
-        origin:
-          # default address of Ada (treating it like a central warehouse)
-          { street_address: "1215 4th Ave", city: "Seattle", state: "WA", zip: "98161" },
-        destination:
-          { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip },
-        product:
-          { height: item.product.height, width: item.product.width, weight: item.product.weight }
-        }
+    # @order.orderitems.each do |item|
+    #   request = {
+    #     origin:
+    #       # default address of Ada (treating it like a central warehouse)
+    #       { street_address: "1215 4th Ave", city: "Seattle", state: "WA", zip: "98161" },
+    #     destination:
+    #       { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip },
+    #     product:
+    #       { height: item.product.height, width: item.product.width, weight: item.product.weight }
+    #     }
+    # end
+    # @response = HTTParty.post("http://localhost:3001/quote", body: request.to_json)
 
-      @response = HTTParty.post("http://localhost:3001/quote", body: request.to_json)
-
+    products = @order.orderitems.map do |item|
+      {
+        height: item.product.height, width: item.product.width, weight: item.product.weight
+      }
     end
-
-
-
-
-
-
+    request = {
+      origin:
+        # default address of Ada (treating it like a central warehouse)
+        { street_address: "1215 4th Ave", city: "Seattle", state: "WA", zip: "98161" },
+      destination:
+        { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip },
+      products: products
+    }
+    @response = HTTParty.post("http://localhost:3001/quote", body: { request: request.to_json })
   end
 
   def confirmation
@@ -80,7 +87,7 @@ class OrdersController < ApplicationController
     session[:order_id] = order.id
 
     ## connection with shipping-service api
-    ## BROKEN: not recognizing any of the existing users for some reason... why?! just using a central warehouse location instead for now
+    ## BROKEN: not recognizing any of the existing users for some reason, even when this is in checkout method... why?! just using a central warehouse location instead for now
     # @order.orderitems.each do |item|
     #   merchant = User.find_by(id: item.product.user_id)
     #   request = {
@@ -92,21 +99,6 @@ class OrdersController < ApplicationController
     #       { height: item.product.height, width: item.product.width, weight: item.product.weight }
     #     }
     # end
-
-    @order.orderitems.each do |item|
-      request = {
-        origin:
-          # default address of Ada (treating it like a central warehouse)
-          { street_address: "1215 4th Ave", city: "Seattle", state: "WA", zip: "98161" },
-        destination:
-          { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip },
-        product:
-          { height: item.product.height, width: item.product.width, weight: item.product.weight }
-        }
-
-      @response = HTTParty.post("http://localhost:3001/quote", body: request.to_json)
-
-    end
 
     # connection with shipping-service API
     # @merchant = @order.user
