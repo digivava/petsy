@@ -68,7 +68,7 @@ class OrdersController < ApplicationController
     }
       begin
       Timeout::timeout(TIMEOUT_SECONDS) do
-        @response = HTTParty.post("http://evening-depths-89076.herokuapp.com/quote", body: { request: request.to_json })
+        @response = HTTParty.post("https://evening-depths-89076.herokuapp.com/quote", body: { request: request.to_json })
         end
       rescue => error
       redirect_to edit_order_path(current_order.id)
