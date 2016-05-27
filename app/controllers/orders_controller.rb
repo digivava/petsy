@@ -80,10 +80,16 @@ class OrdersController < ApplicationController
   def confirmation
     @order = current_order
     @orderitems = @order.orderitems
-    session.delete :order_id
-    order = Order.create
-    order.update(status: "Pending")
-    session[:order_id] = order.id
+    if @order.price
+      session.delete :order_id
+      order = Order.create
+      order.update(status: "Pending")
+      session[:order_id] = order.id
+      render :confirmation
+    else
+      flash[:error] = "Your request was incomplete. Make sure to first select a shipping method, then click Update Shipping before proceeding to checkout."
+      redirect_to order_checkout_path
+    end
   end
 
   def shipping_price
