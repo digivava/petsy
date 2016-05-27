@@ -3,8 +3,13 @@
 <h4>To finish up, please provide all of the following information:</h4><br>
 <%=form_tag update_with_shipping_price_path, :method => 'post' do%>
     <% @response.each do |service|%>
-    <%= service["service_name"] %>: $<%= service["price"].to_f / 100 %>
-    <%=radio_button_tag(:service, service["price"]) %>
+      <%=radio_button_tag(:service, service["price"]) %>
+      <%= service["service_name"] %>: $<%= service["price"].to_f / 100 %>
+       Delivery date: <% if service["delivery_date"] %>
+        (<%= service["delivery_date"] %>)
+      <% else %>
+        (unknown)
+      <% end %><br>
   <%end%>
    <%=submit_tag 'update shipping'%>
 <%end%>
@@ -78,3 +83,5 @@
   <br>
   <%= f.submit "Complete Purchase", class:"btn btn-success btn-lg" %>
   <% end %>
+
+  <%= params %>
