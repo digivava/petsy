@@ -52,36 +52,31 @@ class OrdersController < ApplicationController
       redirect_to edit_order_path(current_order.id), alert: "Please add items to your cart!"
     end
 
-        Timeout::timeout(TIMEOUT_SECONDS) do
-
-
-
-      products = @order.orderitems.map do |item|
-        {
-          height: item.product.height, width: item.product.width, weight: item.product.weight
-        }
-      end
-      request = {
-        origin:
-          # default address of Ada (treating it like a central warehouse)
-          { street_address: "1215 4th Ave", city: "Seattle", state: "WA", zip: "98161" },
-        destination:
-          { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip },
-        products: products
+    products = @order.orderitems.map do |item|
+      {
+        height: item.product.height, width: item.product.width, weight: item.product.weight
       }
-      @response = HTTParty.post("http://localhost:3001/quote", body: { request: request.to_json })
-          end
+    end
+    request = {
+      origin:
+        # default address of Ada (treating it like a central warehouse)
+        { street_address: "1215 4th Ave", city: "Seattle", state: "WA", zip: "98161" },
+      destination:
+        { street_address: @user.street_address, city: @user.city, state: @user.state, zip: @user.zip },
+      products: products
+    }
+    @response = HTTParty.post("http://localhost:3001/quote", body: { request: request.to_json })
+
   end
 
 
   def confirmation
-      @order = current_order
-      @orderitems = @order.orderitems
-      session.delete :order_id
-      order = Order.create
-      order.update(status: "Pending")
-      session[:order_id] = order.id
-
+    @order = current_order
+    @orderitems = @order.orderitems
+    session.delete :order_id
+    order = Order.create
+    order.update(status: "Pending")
+    session[:order_id] = order.id
   end
 
   def shipping_price
