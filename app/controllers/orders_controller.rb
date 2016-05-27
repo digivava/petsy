@@ -1,3 +1,6 @@
+require'timeout'
+TIMEOUT_SECONDS = 1
+
 class OrdersController < ApplicationController
   before_action :require_login, only: [:show_seller_orders]
 
@@ -49,68 +52,36 @@ class OrdersController < ApplicationController
       redirect_to edit_order_path(current_order.id), alert: "Please add items to your cart!"
     end
 
-    # @order.orderitems.each do |item|
-    #   request = {
-    #     origin:
-    #       # default address of Ada (treating it like a central warehouse)
-    #       { street_address: "1215 4th Ave", city: "Seattle", state: "WA", zip: "98161" },
-    #     destination:
-    #       { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip },
-    #     product:
-    #       { height: item.product.height, width: item.product.width, weight: item.product.weight }
-    #     }
-    # end
-    # @response = HTTParty.post("http://localhost:3001/quote", body: request.to_json)
+        Timeout::timeout(TIMEOUT_SECONDS) do
 
-    products = @order.orderitems.map do |item|
-      {
-        height: item.product.height, width: item.product.width, weight: item.product.weight
+
+
+      products = @order.orderitems.map do |item|
+        {
+          height: item.product.height, width: item.product.width, weight: item.product.weight
+        }
+      end
+      request = {
+        origin:
+          # default address of Ada (treating it like a central warehouse)
+          { street_address: "1215 4th Ave", city: "Seattle", state: "WA", zip: "98161" },
+        destination:
+          { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip },
+        products: products
       }
-    end
-    request = {
-      origin:
-        # default address of Ada (treating it like a central warehouse)
-        { street_address: "1215 4th Ave", city: "Seattle", state: "WA", zip: "98161" },
-      destination:
-        { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip },
-      products: products
-    }
-    @response = HTTParty.post("http://localhost:3001/quote", body: { request: request.to_json })
+      @response = HTTParty.post("http://localhost:3001/quote", body: { request: request.to_json })
+          end
   end
 
+
   def confirmation
-    @order = current_order
-    @orderitems = @order.orderitems
-    session.delete :order_id
-    order = Order.create
-    order.update(status: "Pending")
-    session[:order_id] = order.id
+      @order = current_order
+      @orderitems = @order.orderitems
+      session.delete :order_id
+      order = Order.create
+      order.update(status: "Pending")
+      session[:order_id] = order.id
 
-    ## connection with shipping-service api
-    ## BROKEN: not recognizing any of the existing users for some reason, even when this is in checkout method... why?! just using a central warehouse location instead for now
-    # @order.orderitems.each do |item|
-    #   merchant = User.find_by(id: item.product.user_id)
-    #   request = {
-    #     origin:
-    #       { street_address: merchant.street_address, city: merchant.city, state: merchant.state, zip: merchant.state },
-    #     destination:
-    #       { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip },
-    #     product:
-    #       { height: item.product.height, width: item.product.width, weight: item.product.weight }
-    #     }
-    # end
-
-    # connection with shipping-service API
-    # @merchant = @order.user
-    # order_items = @order.orderitems.map { |item| { height: item.product.height, width: item.product.width, weight: item.product.weight } }
-    #
-    # request = { origin: { street_address: @user.street_address, city: @user.city, state: @user.state, zip: @user.zip }, destination: { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip }, products: order_items }.to_json
-    #
-    # response = HTTParty.get("https://agile-shore-50946.herokuapp.com/quote", body: request)
-
-    # binding.pry
-
-    # render the shipping costs from the response
   end
 
   def shipping_price
