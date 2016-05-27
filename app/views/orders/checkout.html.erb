@@ -3,7 +3,7 @@
 <h4>To finish up, please provide all of the following information:</h4><br>
 <%=form_tag update_with_shipping_price_path, :method => 'post' do%>
     <% @response.each do |service|%>
-    <%=service["service_name"]%>
+    <%= service["service_name"] %>: $<%= service["price"].to_f / 100 %>
     <%=radio_button_tag(:service, service["price"]) %>
   <%end%>
    <%=submit_tag 'update shipping'%>
@@ -70,11 +70,11 @@
 
   <%= f.hidden_field :status, value: "Completed" %>
 
-  Subtotal: <%= @order.subtotal %><br>
+  Subtotal: $<%= @order.subtotal %><br>
   <% if @shipping_price %>
-    Shipping: <%= @shipping_price %><br>
+    Shipping: $<%= @shipping_price %><br>
   <% end %>
-  Total: <%= @order.price %>
+  Total: $<%= @order.price %>
   <br>
   <%= f.submit "Complete Purchase", class:"btn btn-success btn-lg" %>
   <% end %>
