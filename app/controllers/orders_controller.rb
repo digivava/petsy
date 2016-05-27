@@ -1,5 +1,5 @@
 require'timeout'
-TIMEOUT_SECONDS = 1
+TIMEOUT_SECONDS = 20
 
 class OrdersController < ApplicationController
   before_action :require_login, only: [:show_seller_orders]
@@ -44,6 +44,7 @@ class OrdersController < ApplicationController
     end
   end
 
+
   def checkout
     @user = User.find(current_user.id)
     # original code
@@ -65,10 +66,16 @@ class OrdersController < ApplicationController
         { street_address: @user.street_address, city: @user.city, state: @user.state, zip: @user.zip },
       products: products
     }
-    @response = HTTParty.post("http://localhost:3001/quote", body: { request: request.to_json })
+      begin
+      Timeout::timeout(TIMEOUT_SECONDS) do
+        @response = HTTParty.post("http://localhost:3001/quote", body: { request: request.to_json })
+        end
+      rescue => error
+      redirect_to edit_order_path(current_order.id)
+      flash[:error] = "Sorry session timed out. Try again."
+      end
 
   end
-
 
   def confirmation
     @order = current_order
@@ -90,6 +97,8 @@ class OrdersController < ApplicationController
 
 
   private
+
+
 
   def remove_items_from_stock(items)
     items.each do |item|
