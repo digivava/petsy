@@ -72,7 +72,7 @@ class OrdersController < ApplicationController
         # default address of Ada (treating it like a central warehouse)
         { street_address: "1215 4th Ave", city: "Seattle", state: "WA", zip: "98161" },
       destination:
-        { street_address: @order.street_address, city: @order.city, state: @order.state, zip: @order.billing_zip },
+        { street_address: @user.street_address, city: @user.city, state: @user.state, zip: @user.zip },
       products: products
     }
     @response = HTTParty.post("http://localhost:3001/quote", body: { request: request.to_json })
